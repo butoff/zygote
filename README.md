@@ -1,2 +1,5 @@
 # zygote
-A minimalistic Android project template
+
+Simple Android project template creator
+
+Usage: zygote <your.project.package.name>

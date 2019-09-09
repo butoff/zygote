@@ -1,0 +1,27 @@
+#!/bin/bash
+
+usage()
+{
+    echo "Usage: zygote <your.project.package.name>"
+    exit
+}
+
+[[ $# -eq 1 ]] || usage
+PACKAGE=$1
+
+ORIG_IFS=$IFS
+IFS='.'
+for i in $PACKAGE;
+do
+    : #TODO: correctness check
+done
+APP=${i^}
+IFS=$ORIG_IFS
+
+git clone --depth 1 -b zygote https://github.com/butoff/zygote.git $APP
+cd $APP
+rm -rf .git
+cd app
+sed -i "s/com\.example\.zygote/$PACKAGE/g" build.gradle src/main/AndroidManifest.xml
+sed -i "s/Zygote/$APP/g" src/main/AndroidManifest.xml
+cd ../..
