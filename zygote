@@ -1,27 +1,31 @@
 #!/bin/bash
 
-usage()
+error()
 {
-    echo "Usage: zygote <your.project.package.name>"
-    exit
+    echo $1
+    exit 1
 }
 
-[[ $# -eq 1 ]] || usage
-PACKAGE=$1
+[[ $# -eq 1 ]] || error "Usage: zygote <your.project.package.name>"
 
-ORIG_IFS=$IFS
+package=$1
+ifs_orig=$IFS
 IFS='.'
-for i in $PACKAGE;
+for i in $package;
 do
-    : #TODO: correctness check
+    ((len++))
+    [[ $i =~ ^[_a-z][_0-9a-z]*$ ]] || error "illegal package name item: $i"
 done
-APP=${i^}
-IFS=$ORIG_IFS
 
-git clone --depth 1 -b zygote https://github.com/butoff/zygote.git $APP
-cd $APP
+[[ $len -gt 1 ]] || error "package name must contain at least two elements"
+
+app=${i^}
+IFS=$ifs_orig
+
+git clone --depth 1 -b zygote https://github.com/butoff/zygote.git $app
+cd $app
 rm -rf .git
 cd app
-sed -i "s/com\.example\.zygote/$PACKAGE/g" build.gradle src/main/AndroidManifest.xml
-sed -i "s/Zygote/$APP/g" src/main/AndroidManifest.xml
+sed -i "s/com\.example\.zygote/$package/g" build.gradle src/main/AndroidManifest.xml
+sed -i "s/Zygote/$app/g" src/main/AndroidManifest.xml
 cd ../..
