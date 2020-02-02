@@ -1,2 +1,2 @@
 # zygote
-A minimalistic Android project template
+This project created using a [Zygote](https://github.com/butoff/zygote) template.
