@@ -16,16 +16,27 @@ do
     ((len++))
     [[ $i =~ ^[_a-z][_0-9a-z]*$ ]] || error "illegal package name item: $i"
 done
+IFS=$ifs_orig
 
 [[ $len -gt 1 ]] || error "package name must contain at least two elements"
 
 app=${i^}
-IFS=$ifs_orig
 
 git clone --depth 1 -b zygote https://github.com/butoff/zygote.git $app
 cd $app
 rm -rf .git
+
+sed -i "s/# zygote/# $app/g" README.md
+
 cd app
-sed -i "s/com\.example\.zygote/$package/g" build.gradle src/main/AndroidManifest.xml
+
+sed -i "s/zygote/$package/g" build.gradle src/main/AndroidManifest.xml
 sed -i "s/Zygote/$app/g" src/main/AndroidManifest.xml
+
+cd src/main/java
+mkdir -p ${package//./\/}
+mv zygote/MainActivity.java ${package//./\/}
+rmdir zygote
+cd ../../../
+
 cd ../..
