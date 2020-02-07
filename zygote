@@ -34,6 +34,7 @@ sed -i "s/zygote/$package/g" build.gradle src/main/AndroidManifest.xml
 sed -i "s/Zygote/$app/g" src/main/AndroidManifest.xml
 
 cd src/main/java
+sed -i "s/zygote/$package/g" zygote/MainActivity.java
 mkdir -p ${package//./\/}
 mv zygote/MainActivity.java ${package//./\/}
 rmdir zygote
