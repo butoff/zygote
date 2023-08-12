@@ -3,30 +3,72 @@
 error()
 {
     echo $1
-    exit 1
+    [[ $2 == 1 ]] && echo "(zygote --help for more information)"
+    exit $2
 }
 
-[[ $# -eq 1 ]] || error "Usage: zygote <your.project.package.name>"
+if [[ $# -lt 1 ]] || [[ $1 == "--help" ]] || [[ $1 == "-h" ]]
+then
+    cat - <<EOF
+Usage: zygote [OPTION]... PACKAGENAME
+Create Android project template with PACKAGENAME.
 
-package=$1
+  --buildsystem=(gradle|make)   Build system, gradle by default
+  --repo=URI                    Zygote repository URI, "https://github.com/butoff/zygote" by default
+EOF
+    exit 1
+fi
+
+while [[ $# -gt 0 ]]
+do
+    case $1 in
+        --buildsystem=*)
+            [[ -z $buildsystem ]] || error "Can't set buildsystem twice, already set to $buildsystem"
+            buildsystem=${1:14}
+            [[ $buildsystem == "gradle" ]] || [[ $buildsystem == "make" ]] || error "unknown buildsystem: $buildsystem" 1
+            ;;
+        --repo=*)
+            [[ -z $repo ]] || error "Can't set repo twice, already set to $repo"
+            repo=${1:7}
+            ;;
+        [a-z]*)
+            [[ -z $package ]] || error "Can't set package name twice, already set to $package"
+            package=$1
+            ;;
+        *) error "Wrong option on package name: $1" 1
+            ;;
+    esac
+    shift
+done
+
+[[ -n $package ]] || error "package name must be specified" 1
+
+: ${buildsystem:=gradle}
+: ${repo:="https://github.com/butoff/zygote.git"}
+
+echo "repo=$repo"
+echo "buidsystem=$buildsystem"
+echo "package=$package"
+
 ifs_orig=$IFS
 IFS='.'
 for component in $package;
 do
     ((len++))
-    [[ $component =~ ^[_a-z][_0-9a-z]*$ ]] || error "illegal package name item: $component"
+    [[ $component =~ ^[_a-z][_0-9a-z]*$ ]] || error "illegal package name item: $component" 2
 done
 IFS=$ifs_orig
 
-[[ $len -gt 1 ]] || error "package name must contain at least two elements"
+[[ $len -gt 1 ]] || error "package name must contain at least two elements" 2
 
 app=${component^}
-git clone --depth 1 -b flatten https://github.com/butoff/zygote.git $app
+git clone --depth 1 -b flatten $repo $app || error "Can't clone $repo" 4
+
 cd $app
 rm -rf .git
 
 sed -i "s/# zygote/# $app/g" README.md
-sed -i "s/zygote/$package/g" build.gradle AndroidManifest.xml
+sed -i "s/zygote/$package/g" build.gradle AndroidManifest.xml Makefile
 sed -i "s/Zygote/$app/g" AndroidManifest.xml
 
 cd java
@@ -34,5 +76,15 @@ sed -i "s/zygote/$package/g" zygote/MainActivity.java
 mkdir -p ${package//./\/}
 mv zygote/MainActivity.java ${package//./\/}
 rmdir zygote
+cd ..
 
-cd ../../..
+case $buildsystem in
+    make)
+        rm -r build.gradle gradle gradlew
+        ;;
+    gradle)
+        rm Makefile
+        ;;
+esac
+
+cd ../..
