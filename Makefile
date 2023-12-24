@@ -12,7 +12,7 @@ ANDROID_HOME ?= ~/android
 # TODO: change according to the desired build SDK level. Don't forget to
 # install using sdkmanager or directly to
 # $(ANDROID_HOME)/platforms/android-$(PLATFORM_VERSION)
-PLATFORM_VERSION := 33
+PLATFORM_VERSION := 34
 
 # Build tools (aapt d8 etc) version
 # TODO: change according to your SDK installation (the name of the directory

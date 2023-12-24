@@ -1,12 +1,5 @@
-buildscript {
-    repositories {
-        google()
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.3'
-    }
+plugins {
+    id 'com.android.application' version '8.2.0'
 }
 
 allprojects {
@@ -16,15 +9,15 @@ allprojects {
     }
 }
 
-apply plugin: 'com.android.application'
-
 android {
-    compileSdkVersion 28
+    namespace 'zygote'
+
+    compileSdkVersion 34
 
     defaultConfig {
         applicationId "zygote"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 34
         versionCode 1
         versionName "0.0"
     }
