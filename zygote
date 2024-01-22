@@ -80,7 +80,7 @@ cd ..
 
 case $buildsystem in
     make)
-        rm -r build.gradle gradle gradlew
+        rm -r build.gradle gradle gradlew settings.gradle
         ;;
     gradle)
         rm Makefile
