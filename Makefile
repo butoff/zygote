@@ -12,12 +12,12 @@ ANDROID_HOME ?= ~/android
 # TODO: change according to the desired build SDK level. Don't forget to
 # install using sdkmanager or directly to
 # $(ANDROID_HOME)/platforms/android-$(PLATFORM_VERSION)
-PLATFORM_VERSION := 34
+PLATFORM_VERSION := 36
 
 # Build tools (aapt d8 etc) version
 # TODO: change according to your SDK installation (the name of the directory
 # located in $ANDROID_HOME/build-tools)
-BUILD_TOOLS_VERSION := 34.0.0
+BUILD_TOOLS_VERSION := 36.0.0
 
 # Android (debug) keystore and its password
 # TODO: change according to your keystore location
@@ -94,7 +94,7 @@ $(DEX): compile
 
 $(UNALIGNED_APK): $(DEX) $(MANIFEST)
 	mkdir -p $(APK_DIR)
-	$(AAPT) package -f -M AndroidManifest.xml -I $(ANDROID_JAR) -F $@ $(DEX_DIR)
+	$(AAPT) package -f -M $(MANIFEST) -I $(ANDROID_JAR) -F $@ $(DEX_DIR)
 
 $(UNSIGNED_APK): $(UNALIGNED_APK)
 	$(ZIPALIGN) -f -v 4 -p $< $@
