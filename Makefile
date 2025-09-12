@@ -56,7 +56,7 @@ build: $(SIGNED_APK)
 java_sources := $(shell find $(SRC_DIR) -name *.java)
 java_classes := $(OUT_DIR)/java_classes
 
-.PHONY: complile
+.PHONY: compile
 compile: $(java_classes)
 
 $(java_classes): $(java_sources)
