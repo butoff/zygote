@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application' version '8.2.0'
+    id 'com.android.application' version '8.13.0'
 }
 
 allprojects {
@@ -12,12 +12,12 @@ allprojects {
 android {
     namespace 'zygote'
 
-    compileSdkVersion 34
+    compileSdkVersion 36
 
     defaultConfig {
         applicationId "zygote"
         minSdkVersion 21
-        targetSdkVersion 34
+        targetSdkVersion 36
         versionCode 1
         versionName "0.0"
     }
