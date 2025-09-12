@@ -1,33 +1,9 @@
 # This is a makefile for building Android applications using only and
 # exclusively make(1) as a buildsystem.
 
-# Android SDK installation directory. Normally it is maintained as an
-# environment variable and doesn't need to be changed.
-ANDROID_HOME ?= ~/android
-
-# The following few variables are subjects to change according to your Android
-# SDK installation.
-
-# Platform SDK level the project is to be built against
-# TODO: change according to the desired build SDK level. Don't forget to
-# install using sdkmanager or directly to
-# $(ANDROID_HOME)/platforms/android-$(PLATFORM_VERSION)
-PLATFORM_VERSION := 36
-
-# Build tools (aapt d8 etc) version
-# TODO: change according to your SDK installation (the name of the directory
-# located in $ANDROID_HOME/build-tools)
-BUILD_TOOLS_VERSION := 36.0.0
-
-# Android (debug) keystore and its password
-# TODO: change according to your keystore location
-# (or create ad-hoc keystore)
-KS ?= ~/.android/debug.keystore
-KS_PASS ?= android
-
-# Application package name. Keep in sync with the manifest.
-# TODO: extract from manifest/apk
-PACKAGE_NAME ?= zygote
+# Normally, you doesn't need to edit this file. All the configurable properties
+# are located in the following included part:
+include config.mk
 
 # SDK paths and tools. Values are derived from previously defined variables.
 
