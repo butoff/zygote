@@ -13,7 +13,7 @@ then
 Usage: zygote [OPTION]... PACKAGENAME
 Create Android project template with PACKAGENAME.
 
-  --buildsystem=(gradle|make)   Build system, gradle by default
+  --buildsystem=(gradle|make)   Build system, gradle by default (also \$ZYGOTE_BUILDSYSTEM variable)
   --repo=URI                    Zygote repository URI, "https://github.com/butoff/zygote" by default
 EOF
     exit 1
@@ -43,11 +43,12 @@ done
 
 [[ -n $package ]] || error "package name must be specified" 1
 
+: ${buildsystem:=$ZYGOTE_BUILDSYSTEM}
 : ${buildsystem:=gradle}
 : ${repo:="https://github.com/butoff/zygote.git"}
 
 echo "repo=$repo"
-echo "buidsystem=$buildsystem"
+echo "buidsystem=$ZYGOTE_BUILDSYSTEM"
 echo "package=$package"
 
 ifs_orig=$IFS
@@ -83,7 +84,8 @@ case $buildsystem in
         rm -r build.gradle gradle gradlew settings.gradle
         ;;
     gradle)
-        rm Makefile
+        # well, still leave Makefile just as an announcement
+        #rm Makefile
         ;;
 esac
 
