@@ -69,7 +69,7 @@ cd $app
 rm -rf .git
 
 sed -i "s/# zygote/# $app/g" README.md
-sed -i "s/zygote/$package/g" build.gradle AndroidManifest.xml Makefile
+sed -i "s/zygote/$package/g" build.gradle AndroidManifest.xml Makefile config.mk
 sed -i "s/Zygote/$app/g" AndroidManifest.xml
 
 cd java
