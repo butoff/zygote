@@ -25,4 +25,4 @@ KS ?= ~/.android/debug.keystore
 KS_PASS ?= android
 
 # Application package name. Keep in sync with the manifest.
-PACKAGE_NAME ?= me.split
+PACKAGE_NAME ?= zygote
