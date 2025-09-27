@@ -1,11 +1,11 @@
 # This is a makefile for building Android applications using only and
 # exclusively make(1) as a buildsystem.
 
-# Normally, you doesn't need to edit this file. All the configurable properties
+# Normally, you don't need to edit this file. All the configurable properties
 # are located in the following included part:
 include config.mk
 
-# SDK paths and tools. Values are derived from previously defined variables.
+# SDK paths and tools. Values are derived from the previously defined variables.
 
 PLATFORM_PATH := $(ANDROID_HOME)/platforms/android-$(PLATFORM_VERSION)
 ANDROID_JAR := $(PLATFORM_PATH)/android.jar
@@ -25,6 +25,9 @@ MANIFEST := AndroidManifest.xml
 # Java source code location
 SRC_DIR := java
 
+# Resources location
+RES_DIR := res
+
 # Output directory for intermediate files and result apk
 OUT_DIR := out
 
@@ -39,13 +42,28 @@ CLASSES_DIR := $(OUT_DIR)/classes
 DEX_DIR := $(OUT_DIR)/dex
 DEX := $(DEX_DIR)/classes.dex
 
+# Generated files location
+GEN_DIR := $(OUT_DIR)/generated
+
+# package name as a path, e.g. my.package -> my/package
+PACKAGE_PATH := $(subst .,/,$(PACKAGE_NAME))
+
+# R.java generated file
+R_FILE := $(GEN_DIR)/$(PACKAGE_PATH)/R.java
+
 # java compiler and its command line arguments
 JAVAC := javac
 JAVAC_ARGS := -sourcepath $(SRC_DIR) -d $(CLASSES_DIR) -classpath $(ANDROID_JAR)
 
+RES_SOURCES := $(shell find $(RES_DIR) -name *.xml)
+JAVA_SOURCES := $(shell find $(SRC_DIR) $(GEN_DIR) -name *.java)
+
+# A list of *.class files
+JAVA_CLASSES := $(OUT_DIR)/JAVA_CLASSES
+
 ################################################################################
 
-# TODO: write brif but explanatory help message, print variables
+# TODO: write brief but explanatory help message, print variables
 .PHONY: help
 help:
 	@echo Targets: build install run etc
@@ -53,24 +71,25 @@ help:
 .PHONY: build
 build: $(SIGNED_APK)
 
-java_sources := $(shell find $(SRC_DIR) -name *.java)
-java_classes := $(OUT_DIR)/java_classes
+$(R_FILE): $(RES_SOURCES)
+	mkdir -p $(GEN_DIR)
+	$(AAPT) package -f -M $(MANIFEST) -S $(RES_DIR) -J $(GEN_DIR) -m -I $(ANDROID_JAR)
 
 .PHONY: compile
-compile: $(java_classes)
+compile: $(JAVA_CLASSES)
 
-$(java_classes): $(java_sources)
+$(JAVA_CLASSES): $(JAVA_SOURCES) $(R_FILE)
 	mkdir -p $(CLASSES_DIR)
 	$(JAVAC) $(JAVAC_ARGS) $^
 	find $(CLASSES_DIR) -name *.class > $@
 
 $(DEX): compile
 	mkdir -p $(DEX_DIR)
-	$(D8) --output $(DEX_DIR) @$(java_classes)
+	$(D8) --output $(DEX_DIR) @$(JAVA_CLASSES)
 
 $(UNALIGNED_APK): $(DEX) $(MANIFEST)
 	mkdir -p $(APK_DIR)
-	$(AAPT) package -f -M $(MANIFEST) -I $(ANDROID_JAR) -F $@ $(DEX_DIR)
+	$(AAPT) package -f -M $(MANIFEST) -S $(RES_DIR) -I $(ANDROID_JAR) -F $@ $(DEX_DIR)
 
 $(UNSIGNED_APK): $(UNALIGNED_APK)
 	$(ZIPALIGN) -f -v 4 -p $< $@
