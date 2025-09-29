@@ -87,7 +87,7 @@ $(DEX): compile
 	mkdir -p $(DEX_DIR)
 	$(D8) --output $(DEX_DIR) @$(JAVA_CLASSES)
 
-$(UNALIGNED_APK): $(DEX) $(MANIFEST)
+$(UNALIGNED_APK): $(DEX) $(MANIFEST) $(RES_SOURCES)
 	mkdir -p $(APK_DIR)
 	$(AAPT) package -f -M $(MANIFEST) -S $(RES_DIR) -I $(ANDROID_JAR) -F $@ $(DEX_DIR)
 
