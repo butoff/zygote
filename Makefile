@@ -55,8 +55,8 @@ R_FILE := $(GEN_DIR)/$(PACKAGE_PATH)/R.java
 JAVAC := javac
 JAVAC_ARGS := -sourcepath $(SRC_DIR) -d $(CLASSES_DIR) -classpath $(ANDROID_JAR)
 
-RES_SOURCES := $(shell find $(RES_DIR) -name *.xml)
-JAVA_SOURCES := $(shell find $(SRC_DIR) $(GEN_DIR) -name *.java)
+RES_SOURCES := $(shell find $(RES_DIR) -name '*.xml')
+JAVA_SOURCES := $(shell find $(SRC_DIR) -name '*.java')
 
 # A list of *.class files
 JAVA_CLASSES := $(OUT_DIR)/JAVA_CLASSES
@@ -81,7 +81,7 @@ compile: $(JAVA_CLASSES)
 $(JAVA_CLASSES): $(JAVA_SOURCES) $(R_FILE)
 	mkdir -p $(CLASSES_DIR)
 	$(JAVAC) $(JAVAC_ARGS) $^
-	find $(CLASSES_DIR) -name *.class > $@
+	find $(CLASSES_DIR) -name '*.class' > $@
 
 $(DEX): compile
 	mkdir -p $(DEX_DIR)
