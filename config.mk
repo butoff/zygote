@@ -1,5 +1,5 @@
 # Configurable part of a buildsystem.
-# In most cases, this file is subject to edit.
+# In most cases, this file is a subject to edit.
 
 # Android SDK installation directory. Normally it is maintained as an
 # environment variable and doesn't need to be changed.
@@ -26,3 +26,18 @@ KS_PASS ?= android
 
 # Application package name. Keep in sync with the manifest.
 PACKAGE_NAME ?= zygote
+
+# Application manifest file
+MANIFEST := AndroidManifest.xml
+
+# Java source code location
+SRC_DIR := java
+
+# AIDL files location
+AIDL_DIR := aidl
+
+# Resources location
+RES_DIR := res
+
+# Output directory for intermediate files and result apk
+OUT_DIR := out
